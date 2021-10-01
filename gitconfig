@@ -1,0 +1,89 @@
+[user]
+    name = danjchoi
+    email = daniel.choi135@gmail.com
+
+[core]
+    ignoresFile = /Users/daniel/.gitignore
+    excludesFile = /Users/daniel/.gitignore
+    editor = vim
+
+[pull]
+    ff = only
+
+[alias]
+    # [ data ]
+    name = rev-parse --abbrev-ref HEAD
+    graph = log --graph --oneline --all
+    tags = tag
+
+    # [ branch actions ]
+    integrate-branch = "!f() { \
+        if [[ \"$#\" -ne 0 ]]; then \
+            echo \"This function takes no args - it rebases your local branch onto the remote branch of the same name.\"; \
+            exit 1; \
+        fi; \
+        git fetch; git rebase origin/$(git name); \
+    }; f"
+    integrate-master = "!f() { \
+        git fetch; \
+        git rebase -i origin/master || git rebase -i origin/master; \
+    }; f"
+    integrate-main = "!f() { \
+        git fetch; \
+        git rebase -i origin/main || git rebase -i origin/master; \
+    }; f"
+    rename = "!f() { \
+        printf '[*] identifying branch...'; \
+        local NAME=\"$(git name)\"; \
+        echo 'branch is:' \"$NAME\"; \
+        echo '[*] renaming local branch to:' \"$1\"; \
+        git branch -m \"$1\" && \
+            echo '[*] pushing newly renamed branch to remote' && \
+            git push origin --set-upstream \"$1\" && \
+            echo '[*] removing old remote branch' && \
+            git push origin :\"$NAME\"; \
+    }; f"
+    prune-dead-branches = "!f() { \
+        set -x; \
+        git checkout master || git checkout main && \
+        git fetch && \
+        git pull && \
+        git worktree prune && \
+        git remote prune origin && \
+        git branch --merged | grep '+' | awk '{print $2}' | tr . - | tr / - | xargs -L1 git worktree remove && \
+        git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 git branch -d && \
+        git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 git branch -D; \
+    }; f"
+
+    # [ file state actions ]
+    # unstage a staged file
+    unstage = reset HEAD --
+    # discard a file's changes
+    discard = checkout --
+    # undo last commit
+    uncommit = reset --soft HEAD~
+    # remove all local state
+    nuke-local-state = "!git reset --hard origin/$(git name) && git clean -xdff"   
+
+    # [ force-push recovery ]
+    recover-last-remote = "!git checkout -b recover.$(git name) && git reset --hard refs/remotes/origin/$(git name)@{1}; echo 'triple check this is the branch state you want, and then switch back to your branch, run git use-recovery-version and git integrate-main again."
+    use-recovery-version = "!git reset --hard recover.$(git name); echo 'if you are really sure, git integrate-master.'"
+
+    # [ worktree ]
+    workon-new = "!f() { \
+        local location=$(echo $1 | tr . - | tr / -); \
+        git worktree add -b $1 ../$location $(git name); \
+        cd ../$location; \
+        local b_name=$(git name); \
+        git push --set-upstream origin $(echo $b_name); \
+        echo \"set up branch $1 at ../$location\"; \
+        cd ../$(echo $location); pwd; \
+    }; f"
+    workon-existing = "!f() { \
+        local location=$(echo $1 | tr . - | tr / -); \
+        git worktree add ../$location $1; \
+        cd ../$location; \
+        local b_name=$(git name); \
+        git push --set-upstream origin $(echo $b_name); \
+        echo \"set up branch $1 at ../$location\"; pwd; \
+    }; f"

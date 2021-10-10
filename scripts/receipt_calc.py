@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+
+
+"""Calculate owed amounts based on receipt."""
+
+
 def main():
     """Calculate venmo."""
     total_pre_fees = float(input("Subtotal: "))
@@ -14,21 +20,17 @@ def main():
         users[name_of_user] = 0
         # users[name_of_user] = fees_divided
         num_items = int(
-            input(f"    Number of items purchased by {name_of_user}: ")
-            or 1
-        ) 
+            input(f"    Number of items purchased by {name_of_user}: ") or 1
+        )
         for item_num in range(num_items):
             users[name_of_user] += float(input(f"    Item {item_num + 1} cost: "))
 
     # - Calculate shared items
-    num_shared_items = int(
-        input("Number of shared items: ")
-        or 0
-    )
+    num_shared_items = int(input("Number of shared items: ") or 0)
     shared_item_cost = 0
     for item_num in range(num_shared_items):
         shared_item_cost += float(input(f"    Item {item_num + 1} cost: "))
-    
+
     for name_of_user in user_names:
         users[name_of_user] += shared_item_cost / (num_users + 1)
         # - Add additional fees

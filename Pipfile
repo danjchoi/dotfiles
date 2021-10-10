@@ -12,6 +12,7 @@ pylint = "*"
 flake8 = "*"
 isort = "*"
 pydocstyle = "*"
+invoke = "*"
 
 [requires]
 python_version = "3.9"

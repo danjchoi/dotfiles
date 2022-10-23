@@ -6,6 +6,11 @@
     ignoresFile = /Users/daniel/.gitignore
     excludesFile = /Users/daniel/.gitignore
     editor = vim
+	pager = less -x1,5
+	# autocrlf = true
+
+[push]
+    autoSetupRemote = true
 
 [pull]
     ff = only
@@ -14,9 +19,13 @@
     # [ data ]
     name = rev-parse --abbrev-ref HEAD
     graph = log --graph --oneline --all
+    logshort = log --abbrev-commit
     tags = tag
+    lb = !git reflog show --pretty=format:'%gs ~ %gd' --date=relative | grep 'checkout:' | grep -oE '[^ ]+ ~ .*' | awk -F~ '!seen[$1]++' | head -n 10 | awk -F' ~ HEAD@{' '{printf(\"  \\033[33m%s:\\033[37m %s\\033[0m\\n\", substr($2, 1, length($2)-1), $1)}'
+
 
     # [ branch actions ]
+    pushfl = push --force-with-lease
     integrate-branch = "!f() { \
         if [[ \"$#\" -ne 0 ]]; then \
             echo \"This function takes no args - it rebases your local branch onto the remote branch of the same name.\"; \
@@ -32,6 +41,17 @@
         git fetch; \
         git rebase -i origin/main || git rebase -i origin/master; \
     }; f"
+    integrate-release = "!f() { \
+        git fetch; \
+        git rebase -i origin/release; \
+    }; f"
+    rename-local = "!f() { \
+        printf '[*] identifying branch...'; \
+        local NAME=\"$(git name)\"; \
+        echo 'branch is:' \"$NAME\"; \
+        echo '[*] renaming local branch to:' \"$1\"; \
+        git branch -m \"$1\"; \
+    }; f"
     rename = "!f() { \
         printf '[*] identifying branch...'; \
         local NAME=\"$(git name)\"; \
@@ -43,16 +63,24 @@
             echo '[*] removing old remote branch' && \
             git push origin :\"$NAME\"; \
     }; f"
+    ; prune-dead-branches = "!f() { \
+    ;     set -x; \
+    ;     git checkout master || git checkout main && \
+    ;     git fetch && \
+    ;     git pull && \
+    ;     git worktree prune && \
+    ;     git remote prune origin && \
+    ;     git branch --merged | grep '+' | awk '{print $2}' | tr . - | tr / - | xargs -L1 git worktree remove && \
+    ;     git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 git branch -d && \
+    ;     git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 git branch -D; \
+    ; }; f"
     prune-dead-branches = "!f() { \
         set -x; \
-        git checkout master || git checkout main && \
-        git fetch && \
+        git checkout release || git checkout master || git checkout main && \
         git pull && \
-        git worktree prune && \
         git remote prune origin && \
-        git branch --merged | grep '+' | awk '{print $2}' | tr . - | tr / - | xargs -L1 git worktree remove && \
-        git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 git branch -d && \
-        git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 git branch -D; \
+        git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 -r git branch -d && \
+        git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 -r git branch -D; \
     }; f"
 
     # [ file state actions ]
@@ -87,3 +115,5 @@
         git push --set-upstream origin $(echo $b_name); \
         echo \"set up branch $1 at ../$location\"; pwd; \
     }; f"
+[init]
+	defaultBranch = main

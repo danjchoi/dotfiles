@@ -21,16 +21,26 @@ function fish_prompt --description "Write out the prompt"
     end
 
     # - pipenv shell
-    if set -q VIRTUAL_ENV
-        set venv_name (basename $VIRTUAL_ENV | tr "-" "\n" | HEAD -n 1)
+    if test -n "$VIRTUAL_ENV"
+        set venv_name (basename $VIRTUAL_ENV | tr "-" "\n" | head -n 1)
+        echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
     # - pyenv-virtualenv
     else if test (pyenv version-name) != (pyenv global)
         set venv_name (pyenv version-name)
+        echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
     end
-    echo -n -s  (set_color $color_venv) "($name) " (set_color normal)
 
     # - directory
     echo -n -s (set_color $color_cwd) (prompt_pwd) (set_color normal)
+
+    # - git branch
+    # Maybe check cwd and see if it matches branch-name
+    set -l branch_name (git rev-parse --abbrev-ref HEAD 2> /dev/null)
+    # set -l worktree_state (git rev-parse --is-inside-work-tree 2> /dev/null)
+    # if test -n "$branch_name" && test "$worktree_state" != "true"
+    if test -n "$branch_name"
+        echo -n -s (set_color cyan) " ($branch_name)" (set_color normal)
+    end
 
     # - return code
     if test $stored_status != 0

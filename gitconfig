@@ -1,5 +1,5 @@
 [user]
-    name = danjchoi
+    name = Daniel Choi
     email = daniel.choi135@gmail.com
 
 [core]
@@ -19,6 +19,9 @@
     # [ data ]
     name = rev-parse --abbrev-ref HEAD
     graph = log --graph --oneline --all
+    logmr = "!f() { \
+        git log --reverse --pretty="%B" $(git name) --not origin/release; \
+    }; f"
     logshort = log --abbrev-commit
     tags = tag
     lb = !git reflog show --pretty=format:'%gs ~ %gd' --date=relative | grep 'checkout:' | grep -oE '[^ ]+ ~ .*' | awk -F~ '!seen[$1]++' | head -n 10 | awk -F' ~ HEAD@{' '{printf(\"  \\033[33m%s:\\033[37m %s\\033[0m\\n\", substr($2, 1, length($2)-1), $1)}'

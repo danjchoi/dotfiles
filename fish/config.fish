@@ -17,11 +17,13 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # [ Golang ]
 export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
 
+# [ curl ]
+export PATH="$HOME/curl/bin:$PATH"
+
 # [ Aliases ]
-#alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
-# alias subl='/mnt/c/Program\ Files/Sublime\ Text\ 3/subl.exe'
 alias gs="git status"
 alias ga="git add"
+alias gap="git add -p"
 alias gc="git commit"
 alias gl="git log --oneline"
 alias gr="git rebase"

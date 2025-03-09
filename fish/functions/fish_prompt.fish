@@ -49,7 +49,4 @@ function fish_prompt --description "Write out the prompt"
 
     # - suffix
     echo -n -s "$suffix "
-
-    # - Legacy
-    # echo -n -s "$USER" @ (prompt_hostname) ' ' (set_color $color_cwd) (prompt_pwd) (set_color normal)
 end

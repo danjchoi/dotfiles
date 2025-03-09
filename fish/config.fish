@@ -30,3 +30,7 @@ alias gr="git rebase"
 alias gco="git checkout"
 alias open="explorer.exe"
 alias sp="splitpane"
+
+# [ Todyl Specific Aliases ]
+alias apiv1="docker exec -it thrust-ulysses-dev-1 bash -c 'cd /go/src/todyl.com/cmd/api/; make dev'"
+alias apiv2="docker exec -it thrust-portal-dev-1 bash -c 'cd /go/src/todyl.com/cmd/portal/; go run main.go --env=dev'"

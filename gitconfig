@@ -1,6 +1,6 @@
 [user]
     name = Daniel Choi
-    email = daniel.choi135@gmail.com
+    email = daniel@todyl.com
 
 [core]
     ignoresFile = /Users/daniel/.gitignore
@@ -120,3 +120,5 @@
     }; f"
 [init]
 	defaultBranch = main
+[url "git@gitlab.todyl.com:"]
+    insteadOf = https://gitlab.todyl.com

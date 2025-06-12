@@ -20,15 +20,15 @@ function fish_prompt --description "Write out the prompt"
             set suffix ">"
     end
 
-    # - pipenv shell
-    if test -n "$VIRTUAL_ENV"
-        set venv_name (basename $VIRTUAL_ENV | tr "-" "\n" | head -n 1)
-        echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
-    # - pyenv-virtualenv
-    else if test (pyenv version-name) != (pyenv global)
-        set venv_name (pyenv version-name)
-        echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
-    end
+    # # - pipenv shell
+    # if test -n "$VIRTUAL_ENV"
+    #     set venv_name (basename $VIRTUAL_ENV | tr "-" "\n" | head -n 1)
+    #     echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
+    # # - pyenv-virtualenv
+    # else if test (pyenv version-name) != (pyenv global)
+    #     set venv_name (pyenv version-name)
+    #     echo -n -s  (set_color $color_venv) "($venv_name) " (set_color normal)
+    # end
 
     # - directory
     echo -n -s (set_color $color_cwd) (prompt_pwd) (set_color normal)

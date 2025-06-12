@@ -29,13 +29,14 @@
 
     # [ branch actions ]
     pushfl = push --force-with-lease
-    integrate-branch = "!f() { \
-        if [[ \"$#\" -ne 0 ]]; then \
-            echo \"This function takes no args - it rebases your local branch onto the remote branch of the same name.\"; \
-            exit 1; \
-        fi; \
-        git fetch; git rebase origin/$(git name); \
-    }; f"
+    # integrate-branch = "!f() { \
+    #     if [[ \"$#\" -ne 0 ]]; then \
+    #         echo \"This function takes no args - it rebases your local branch onto the remote branch of the same name.\"; \
+    #         exit 1; \
+    #     fi; \
+    #     git fetch; \
+    #     git rebase origin/$(git name); \
+    # }; f"
     integrate-master = "!f() { \
         git fetch; \
         git rebase -i origin/master || git rebase -i origin/master; \
@@ -66,17 +67,17 @@
             echo '[*] removing old remote branch' && \
             git push origin :\"$NAME\"; \
     }; f"
-    ; prune-dead-branches = "!f() { \
-    ;     set -x; \
-    ;     git checkout master || git checkout main && \
-    ;     git fetch && \
-    ;     git pull && \
-    ;     git worktree prune && \
-    ;     git remote prune origin && \
-    ;     git branch --merged | grep '+' | awk '{print $2}' | tr . - | tr / - | xargs -L1 git worktree remove && \
-    ;     git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 git branch -d && \
-    ;     git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 git branch -D; \
-    ; }; f"
+    # prune-dead-branches = "!f() { \
+    #     set -x; \
+    #      git checkout master || git checkout main && \
+    #      git fetch && \
+    #      git pull && \
+    #      git worktree prune && \
+    #      git remote prune origin && \
+    #      git branch --merged | grep '+' | awk '{print $2}' | tr . - | tr / - | xargs -L1 git worktree remove && \
+    #      git branch --merged | grep '+' | awk '{print $2}' | xargs -L1 git branch -d && \
+    #      git branch -vv | ack ': gone' | awk '{print $1}' | xargs -L1 git branch -D; \
+    #  }; f"
     prune-dead-branches = "!f() { \
         set -x; \
         git checkout release || git checkout master || git checkout main && \
@@ -122,3 +123,5 @@
 	defaultBranch = main
 [url "git@gitlab.todyl.com:"]
     insteadOf = https://gitlab.todyl.com
+[url "git@github.com:"]
+    insteadOf = https://github.com

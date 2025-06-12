@@ -1,0 +1,2 @@
+GOPRIVATE=gitlab.todyl.com,github.com/todyl-eng,github.com/todyl-infra
+GONOSUMDB=gitlab.todyl.com,github.com/todyl-eng,github.com/todyl-infra

@@ -17,9 +17,6 @@ export EDITOR="vim"
 # [ Golang ]
 export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
 
-# [ curl ]
-export PATH="$HOME/curl/bin:$PATH"
-
 # [ Aliases ]
 alias gs="git status"
 alias ga="git add"
